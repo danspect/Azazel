@@ -19,37 +19,26 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
+
 using DSharpPlus;
-
 using DSharpPlus.CommandsNext;
-
 using DSharpPlus.CommandsNext.Attributes;
-
 using DSharpPlus.Entities;
 
 namespace Azazel.Commands.Moderation;
 
 public class Kick : BaseCommandModule
 {
-    [
-        Command("kick"),
-        Description("Kicks a Member From The Server"),
-        RequirePermissions(Permissions.KickMembers)
-    ]
-    public async Task KickMember(CommandContext ctx, [Description("User To Be Kicked")] DiscordMember member, [Description("The Reason To Kick The Specified User")] string? reason = null)
+    [Command("kick"), Description("Kicks a Member From The Server")]
+    [RequirePermissions(Permissions.KickMembers), RequireGuild]
+    public async Task KickMemberAsync(CommandContext ctx, DiscordMember member, [RemainingText] string? reason = "Reason not specified.")
     {
-        await ctx.TriggerTypingAsync().ConfigureAwait(false);
-
-        try
+        if (member.Hierarchy >= ctx.Guild.CurrentMember.Hierarchy)
         {
-            await member.RemoveAsync(reason);
-        }
-        catch (Exception ex)
-        {
-            await ctx.RespondAsync($"Failed to kick {member.Mention}.");
+            await ctx.RespondAsync("You cannot kick this member.");
             return;
         }
 
-        await ctx.RespondAsync($"{member.Mention} was kicked.");
+        await ctx.RespondAsync($"{member.Mention} was kicked: {reason}");
     }
 }
