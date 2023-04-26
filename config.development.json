@@ -4,16 +4,21 @@
         "token": "",
         "prefix": "zl"
     },
-
-    "logging" : {
+    "Serilog": {
+        "Using": [
+            "Serilog.Sinks.Console"
+        ],
+        "MinimumLevel": "Debug",
+        "WriteTo": [
+            { "Name": "Console" }
+        ]
     },
-
-    "database" : {
-        "username" : "",
-        "password" : "",
-        "database" : "",
-        "application" : "",
-        "host" : "",
-        "port" : 5432
+    "database": {
+        "username": "",
+        "password": "",
+        "database": "",
+        "application": "",
+        "host": "",
+        "port": 5432
     }
 }
