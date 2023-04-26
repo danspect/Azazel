@@ -31,15 +31,11 @@ namespace Azazel.Commands.Moderation;
 
 public class Ban : BaseCommandModule
 {
-    [
-        Command("ban"),
-        Description("Bans a Member From The Server"),
-        RequirePermissions(Permissions.BanMembers)
-    ]
-    public async Task BanUser(CommandContext ctx, [Description("The User To Ban From The Server")] DiscordMember member, [Description("Delete the messages from the user in the past days (default is 0)")] ushort deleteMessageDays = 0, [Description("The Reason To Ban The Specified User")] string? reason = null)
-    {
-        await ctx.TriggerTypingAsync().ConfigureAwait(false);
+    [Command("ban"), Description("Bans a Member From The Server")]
+    [RequirePermissions(Permissions.BanMembers), RequireGuild]
 
+    public async Task BanUser(CommandContext ctx, DiscordMember member, [Description("Delete the messages from the user in the past days (default is 0)")] ushort deleteMessageDays = 0, [RemainingText] string? reason = "Reason not specified.")
+    {
         if ((await ctx.Guild.GetBanAsync(member)) != null)
         {
             await ctx.RespondAsync($"{member.Mention} is already banned.");
@@ -52,7 +48,7 @@ public class Ban : BaseCommandModule
         }
         catch (System.Exception ex)
         {
-            await ctx.RespondAsync($"Failed to ban {member.Mention}.");
+            await ctx.RespondAsync($"Failed to ban {member.Mention}: {ex}.");
             return;
         }
 
